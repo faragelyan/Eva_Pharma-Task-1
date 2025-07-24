@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Eva_Pharma_Task1.Models.Categories>
+
+@{
+    ViewData["Title"] = "Category List";
+}
+
+<h1 class="mb-4 text-primary">
+    <i class="bi bi-tags-fill"></i> Category Management
+</h1>
+
+<p>
+    <a class="btn btn-success" asp-action="Create">
+        <i class="bi bi-plus-circle"></i> Add New Category
+    </a>
+</p>
+
+<form method="get" asp-action="Index" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control" placeholder="Search by category name..." />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-circle"></i> No categories available. Please add one.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">@Html.DisplayNameFor(model => model.First().Id)</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.First().catName)</th>
+                    <th scope="col" class="text-end">Available Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Model)
+                {
+                    <tr>
+                        <td>@category.Id</td>
+                        <td>@category.catName</td>
+                        <td class="text-end">
+                            <a class="btn btn-info btn-sm me-1" asp-action="Details" asp-route-id="@category.Id">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a class="btn btn-warning btn-sm me-1" asp-action="Edit" asp-route-id="@category.Id">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@category.Id">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,19 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build results
+bin/
+obj/
+
+# ASP.NET specific
+*.dbmdl
+*.bak
+*.log
+
+# Others
+*.swp
+*.lock.json
+node_modules/
+wwwroot/lib/

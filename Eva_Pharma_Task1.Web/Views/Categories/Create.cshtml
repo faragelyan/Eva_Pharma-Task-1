@@ -1,0 +1,45 @@
+﻿@model Eva_Pharma_Task1.Models.Categories
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 class="mb-4">Create New Category</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="catName" class="form-label"></label>
+                <input asp-for="catName" class="form-control" />
+                <span asp-validation-for="catName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="catOrder" class="form-label"></label>
+                <input asp-for="catOrder" class="form-control" type="number" />
+                <span asp-validation-for="catOrder" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="createdDate" class="form-label"></label>
+                <input asp-for="createdDate" class="form-control" type="datetime-local" />
+                <span asp-validation-for="createdDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="markedAsDeleted" class="form-check-input" />
+                <label asp-for="markedAsDeleted" class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
