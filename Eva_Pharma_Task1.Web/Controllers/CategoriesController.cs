@@ -95,7 +95,7 @@ namespace Eva_Pharma_Task1.Web.Controllers
             await categoryRepository.SaveAsync();
             return RedirectToAction("Index");
         }
-        [HttpGet]
+
         [HttpGet]
         public async Task<IActionResult> Search(string query)
         {
