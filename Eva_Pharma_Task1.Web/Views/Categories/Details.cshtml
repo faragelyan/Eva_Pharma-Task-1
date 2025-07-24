@@ -1,31 +1,61 @@
 ﻿@model Eva_Pharma_Task1.Models.Categories
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Category Details";
 }
 
-<h1>Category Details</h1>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
 
-<div class="border p-3 mb-3">
-    <dl class="row">
-        <dt class="col-sm-2">ID</dt>
-        <dd class="col-sm-10">@Model.Id</dd>
+            <h1 class="mb-4 text-info fw-bold">
+                <i class="bi bi-card-list me-2 text-primary"></i> Category Details
+            </h1>
 
-        <dt class="col-sm-2">Name</dt>
-        <dd class="col-sm-10">@Model.catName</dd>
+            <div class="card shadow border-0 mb-4">
+                <div class="card-header bg-gradient bg-info bg-opacity-25 text-dark fw-semibold">
+                    <i class="bi bi-info-circle-fill me-1 text-primary"></i> Overview
+                </div>
+                <div class="card-body bg-light">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-secondary">ID:</dt>
+                        <dd class="col-sm-8 text-dark">@Model.Id</dd>
 
-        <dt class="col-sm-2">Order</dt>
-        <dd class="col-sm-10">@Model.catOrder</dd>
+                        <dt class="col-sm-4 text-secondary">Name:</dt>
+                        <dd class="col-sm-8 text-dark">@Model.catName</dd>
 
-        <dt class="col-sm-2">Created Date</dt>
-        <dd class="col-sm-10">@Model.createdDate.ToShortDateString()</dd>
+                        <dt class="col-sm-4 text-secondary">Order:</dt>
+                        <dd class="col-sm-8 text-dark">@Model.catOrder</dd>
 
-        <dt class="col-sm-2">Marked as Deleted</dt>
-        <dd class="col-sm-10">@Model.markedAsDeleted</dd>
-    </dl>
-</div>
+                        <dt class="col-sm-4 text-secondary">Created Date:</dt>
+                        <dd class="col-sm-8 text-dark">
+                            @Model.createdDate.ToString("dd MMM yyyy | hh:mm tt")
+                        </dd>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        <dt class="col-sm-4 text-secondary">Marked as Deleted:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.markedAsDeleted)
+                            {
+                                <span class="badge bg-danger bg-opacity-75">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success bg-opacity-75">No</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary px-4">
+                    <i class="bi bi-pencil-square"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-dark px-4">
+                    <i class="bi bi-arrow-left-circle"></i> Back to List
+                </a>
+            </div>
+
+        </div>
+    </div>
 </div>

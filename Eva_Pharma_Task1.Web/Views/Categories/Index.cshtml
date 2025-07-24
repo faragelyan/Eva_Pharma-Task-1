@@ -4,75 +4,130 @@
     ViewData["Title"] = "Category List";
 }
 
-<h1 class="mb-4 text-primary">
+<h1 class="mb-4 text-primary fw-bold text-start">
     <i class="bi bi-tags-fill"></i> Category Management
 </h1>
 
-<p>
-    <a class="btn btn-success" asp-action="Create">
-        <i class="bi bi-plus-circle"></i> Add New Category
-    </a>
-</p>
+<!-- Search & Add New Button Row -->
+<div class="row align-items-center mb-4">
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Search by category name..." autocomplete="off" />
+    </div>
+    <div class="col-md-6 text-md-end text-center mt-2 mt-md-0">
+        <a class="btn btn-success shadow-sm px-4" asp-action="Create">
+            <i class="bi bi-plus-circle me-1"></i> Create New Category
+        </a>
+    </div>
+</div>
 
-<form method="get" asp-action="Index" class="row g-3 mb-4">
-    <div class="col-md-4">
-        <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control" placeholder="Search by category name..." />
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">
-            <i class="bi bi-search"></i> Search
-        </button>
-    </div>
-</form>
-
-@if (!Model.Any())
-{
-    <div class="alert alert-warning">
-        <i class="bi bi-exclamation-circle"></i> No categories available. Please add one.
-    </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-dark">
+<!-- Category Table -->
+<div class="table-responsive shadow rounded">
+    <table class="table table-hover align-middle border">
+        <thead class="table-dark">
+            <tr>
+                <th>#ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="categoryTableBody">
+            @foreach (var category in Model)
+            {
                 <tr>
-                    <th scope="col">Category ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Status</th>
-                    <th scope="col" class="text-end">Available Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var category in Model)
-                {
-                    <tr>
-                        <td>@category.Id</td>
-                        <td>@category.catName</td>
-                        <td>
-                            @if (category.markedAsDeleted)
-                            {
-                                <span class="badge bg-danger">Deleted</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-success">Active</span>
-                            }
-                        </td>
-                        <td class="text-end">
-                            <a class="btn btn-info btn-sm me-1" asp-action="Details" asp-route-id="@category.Id">
-                                <i class="bi bi-eye"></i> View
-                            </a>
-                            <a class="btn btn-warning btn-sm me-1" asp-action="Edit" asp-route-id="@category.Id">
+                    <td>@category.Id</td>
+                    <td class="fw-semibold">@category.catName</td>
+                    <td>
+                        @if (category.markedAsDeleted)
+                        {
+                            <span class="badge bg-danger">Deleted</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-info me-1" asp-action="Details" asp-route-id="@category.Id">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+
+                        @if (!category.markedAsDeleted)
+                        {
+                            <a class="btn btn-sm btn-outline-warning me-1" asp-action="Edit" asp-route-id="@category.Id">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
-                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@category.Id">
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@category.Id">
                                 <i class="bi bi-trash"></i> Delete
                             </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        }
+                        else
+                        {
+                            <small class="text-muted fst-italic" style="font-size: 0.818rem;">No actions allowed</small>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="alert alert-warning d-none mt-3 text-center">
+        <i class="bi bi-exclamation-circle"></i> No categories found.
     </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#searchInput').on('input', function () {
+                let searchValue = $(this).val();
+
+                $.ajax({
+                    url: '@Url.Action("Search", "Categories")',
+                    type: 'GET',
+                    data: { query: searchValue },
+                    success: function (categories) {
+                        let rows = '';
+
+                        categories.forEach(function (category) {
+                            rows += `
+                                <tr>
+                                    <td>${category.id}</td>
+                                    <td class="fw-semibold">${category.catName}</td>
+                                    <td>
+                                        ${category.markedAsDeleted
+                                            ? '<span class="badge bg-danger">Deleted</span>'
+                                            : '<span class="badge bg-success">Active</span>'}
+                                    </td>
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-outline-info me-1" href="/Categories/Details/${category.id}">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        ${category.markedAsDeleted
+                                            ? '<span class="text-muted fst-italic">No actions allowed</span>'
+                                            : `
+                                                <a class="btn btn-sm btn-outline-warning me-1" href="/Categories/Edit/${category.id}">
+                                                    <i class="bi bi-pencil-square"></i> Edit
+                                                </a>
+                                                <a class="btn btn-sm btn-outline-danger" href="/Categories/Delete/${category.id}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>`}
+                                    </td>
+                                </tr>`;
+                        });
+
+                        $('#categoryTableBody').html(rows);
+
+                        if (categories.length === 0) {
+                            $('#noResults').removeClass('d-none');
+                        } else {
+                            $('#noResults').addClass('d-none');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 }

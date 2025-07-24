@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Eva_Pharma_Task1.DAL.Repositories;
 using Eva_Pharma_Task1.Models;
+using System.Threading.Tasks;
 
 namespace Eva_Pharma_Task1.Web.Controllers
 {
@@ -13,15 +14,15 @@ namespace Eva_Pharma_Task1.Web.Controllers
             this.categoryRepository = categoryRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = categoryRepository.GetAll();
+            var categories = await categoryRepository.GetAllAsync();
             return View("Index", categories);
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var category = categoryRepository.GetCategory(id);
+            var category = await categoryRepository.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
@@ -36,12 +37,12 @@ namespace Eva_Pharma_Task1.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Categories category)
+        public async Task<IActionResult> Create(Categories category)
         {
             if (ModelState.IsValid)
             {
-                categoryRepository.Add(category);
-                categoryRepository.Save();
+                await categoryRepository.AddAsync(category);
+                await categoryRepository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -49,9 +50,9 @@ namespace Eva_Pharma_Task1.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var category = categoryRepository.GetCategory(id);
+            var category = await categoryRepository.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
@@ -60,43 +61,62 @@ namespace Eva_Pharma_Task1.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Categories category)
+        public async Task<IActionResult> Edit(Categories category)
         {
             if (ModelState.IsValid)
             {
-                categoryRepository.Update(category);
-                categoryRepository.Save();
+                await categoryRepository.UpdateAsync(category);
+                await categoryRepository.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
 
             return View("Edit", category);
         }
 
-
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var category = categoryRepository.GetCategory(id);
+            var category = await categoryRepository.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
             return View("Delete", category);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmDelete(int id)
+        public async Task<IActionResult> ConfirmDelete(int id)
         {
-            var category = categoryRepository.GetCategory(id);
+            var category = await categoryRepository.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
-            categoryRepository.Delete(id);
-            categoryRepository.Save();
+            await categoryRepository.DeleteAsync(id);
+            await categoryRepository.SaveAsync();
             return RedirectToAction("Index");
         }
+        [HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> Search(string query)
+        {
+            var allCategories = await categoryRepository.GetAllAsync();
 
-        
+            var filtered = string.IsNullOrWhiteSpace(query)
+                ? allCategories
+                : allCategories.Where(c =>
+                    !string.IsNullOrEmpty(c.catName) &&
+                    c.catName.Contains(query, StringComparison.OrdinalIgnoreCase));
+
+            return Json(filtered.Select(c => new
+            {
+                id = c.Id,
+                catName = c.catName,
+                markedAsDeleted = c.markedAsDeleted
+            }));
+        }
+
+
+
+
     }
 }

@@ -1,53 +1,46 @@
 ﻿using Eva_Pharma_Task1.Models;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Eva_Pharma_Task1.DAL.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        AppDbContext _appDbContext;
+        private readonly AppDbContext _appDbContext;
+
         public CategoryRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
 
-
-        //Get All categories
-        public List<Categories> GetAll()
+        public async Task<List<Categories>> GetAllAsync()
         {
-            return _appDbContext.Categories.ToList();
+            return await _appDbContext.Categories
+                .ToListAsync();
         }
 
-
-        // Get Specific Category
-        public Categories GetCategory(int id)
+        public async Task<Categories?> GetCategoryAsync(int id)
         {
-            return _appDbContext.Categories.FirstOrDefault(c => c.Id == id);
+            return await _appDbContext.Categories
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-
-        // Add Category
-        public void Add(Categories category)
+        public async Task AddAsync(Categories category)
         {
-            _appDbContext.Add(category);
+            await _appDbContext.Categories.AddAsync(category);
         }
 
-        
-        // Update Specific Category
-        public void Update(Categories category)
+        public Task UpdateAsync(Categories category)
         {
-            _appDbContext.Update(category);
+            _appDbContext.Categories.Update(category);
+            return Task.CompletedTask;
         }
 
-
-        // Delete Category
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var category=_appDbContext.Categories.FirstOrDefault(c => c.Id == id);
+            var category = await _appDbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (category != null)
             {
                 category.markedAsDeleted = true;
@@ -55,13 +48,12 @@ namespace Eva_Pharma_Task1.DAL.Repositories
             }
         }
 
-
-        // Save Execution
-        public void Save()
+        public async Task SaveAsync()
         {
-            _appDbContext.SaveChanges();
+            await _appDbContext.SaveChangesAsync();
         }
 
-        
+
+
     }
 }

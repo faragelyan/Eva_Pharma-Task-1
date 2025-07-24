@@ -1,42 +1,66 @@
 ﻿@model Eva_Pharma_Task1.Models.Categories
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Category";
 }
 
-<h1 class="mb-4">Create New Category</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 text-center">
+        <h1 class="mb-4 text-success fw-bold">
+            <i class="bi bi-plus-circle-fill me-2 text-primary"></i> Create New Category
+        </h1>
+    </div>
+</div>
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-            <div class="mb-3">
-                <label asp-for="catName" class="form-label"></label>
-                <input asp-for="catName" class="form-control" />
-                <span asp-validation-for="catName" class="text-danger"></span>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header bg-success bg-opacity-10 text-success fw-semibold">
+                <i class="bi bi-info-circle me-1"></i> Fill in the category information
             </div>
+            <div class="card-body p-4 bg-light">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
 
-            <div class="mb-3">
-                <label asp-for="catOrder" class="form-label"></label>
-                <input asp-for="catOrder" class="form-control" type="number" />
-                <span asp-validation-for="catOrder" class="text-danger"></span>
+                    <!-- Category Name -->
+                    <div class="mb-3">
+                        <label asp-for="catName" class="form-label fw-semibold text-primary">
+                            <i class="bi bi-tag-fill me-1"></i> Category Name
+                        </label>
+                        <input asp-for="catName" class="form-control border-primary-subtle shadow-sm" placeholder="e.g. Painkillers" />
+                        <span asp-validation-for="catName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Category Order -->
+                    <div class="mb-3">
+                        <label asp-for="catOrder" class="form-label fw-semibold text-primary">
+                            <i class="bi bi-list-ol me-1"></i> Display Order
+                        </label>
+                        <input asp-for="catOrder" class="form-control border-info-subtle shadow-sm" type="number" placeholder="e.g. 1" />
+                        <span asp-validation-for="catOrder" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Created Date -->
+                    <div class="mb-3">
+                        <label asp-for="createdDate" class="form-label fw-semibold text-primary">
+                            <i class="bi bi-calendar-event me-1"></i> Created Date
+                        </label>
+                        <input asp-for="createdDate" class="form-control border-success-subtle shadow-sm" type="datetime-local" />
+                        <span asp-validation-for="createdDate" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-dark">
+                            <i class="bi bi-arrow-left-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-check2-circle"></i> Create
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="createdDate" class="form-label"></label>
-                <input asp-for="createdDate" class="form-control" type="datetime-local" />
-                <span asp-validation-for="createdDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-check mb-3">
-                <input asp-for="markedAsDeleted" class="form-check-input" />
-                <label asp-for="markedAsDeleted" class="form-check-label"></label>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Create</button>
-            <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
-        </form>
+        </div>
     </div>
 </div>
 
