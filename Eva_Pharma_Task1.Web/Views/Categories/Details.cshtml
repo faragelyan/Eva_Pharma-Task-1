@@ -32,15 +32,15 @@
                             @Model.createdDate.ToString("dd MMM yyyy | hh:mm tt")
                         </dd>
 
-                        <dt class="col-sm-4 text-secondary">Marked as Deleted:</dt>
+                        <dt class="col-sm-4 text-secondary">Status:</dt>
                         <dd class="col-sm-8">
                             @if (Model.markedAsDeleted)
                             {
-                                <span class="badge bg-danger bg-opacity-75">Yes</span>
+                                <span class="badge bg-danger bg-opacity-75">Deleted</span>
                             }
                             else
                             {
-                                <span class="badge bg-success bg-opacity-75">No</span>
+                                <span class="badge bg-success bg-opacity-75">Active</span>
                             }
                         </dd>
                     </dl>
