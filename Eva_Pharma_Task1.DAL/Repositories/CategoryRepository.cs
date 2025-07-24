@@ -49,7 +49,10 @@ namespace Eva_Pharma_Task1.DAL.Repositories
         {
             var category=_appDbContext.Categories.FirstOrDefault(c => c.Id == id);
             if (category != null)
-                _appDbContext.Categories.Remove(category);
+            {
+                category.markedAsDeleted = true;
+                _appDbContext.Categories.Update(category);
+            }
         }
 
 

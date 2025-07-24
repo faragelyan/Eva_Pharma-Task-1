@@ -37,8 +37,9 @@ else
         <table class="table table-hover align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th scope="col">@Html.DisplayNameFor(model => model.First().Id)</th>
-                    <th scope="col">@Html.DisplayNameFor(model => model.First().catName)</th>
+                    <th scope="col">Category ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
                     <th scope="col" class="text-end">Available Actions</th>
                 </tr>
             </thead>
@@ -48,6 +49,16 @@ else
                     <tr>
                         <td>@category.Id</td>
                         <td>@category.catName</td>
+                        <td>
+                            @if (category.markedAsDeleted)
+                            {
+                                <span class="badge bg-danger">Deleted</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                        </td>
                         <td class="text-end">
                             <a class="btn btn-info btn-sm me-1" asp-action="Details" asp-route-id="@category.Id">
                                 <i class="bi bi-eye"></i> View
