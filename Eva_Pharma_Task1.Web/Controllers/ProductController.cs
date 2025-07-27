@@ -2,6 +2,8 @@
 using Eva_Pharma_Task1.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace Eva_Pharma_Task1.Web.Controllers
 {
@@ -24,29 +26,22 @@ namespace Eva_Pharma_Task1.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int ID)
+        public async Task<IActionResult> Details(int id)
         {
-            var product = await productRepository.GetProductAsync(ID);
+            var product = await productRepository.GetProductAsync(id);
             if (product == null)
-            {
                 return NotFound();
-            }
+
             return View("Details", product);
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var categories = await categoryRepository.GetAllAsync();
-
-            ViewBag.Categories = categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.catName
-            }).ToList();
-
+            await LoadCategoriesAsync();
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
@@ -58,17 +53,10 @@ namespace Eva_Pharma_Task1.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var categories = await categoryRepository.GetAllAsync();
-
-            ViewBag.Categories = categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.catName
-            }).ToList();
-
+            await LoadCategoriesAsync();
             return View(product);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -76,15 +64,10 @@ namespace Eva_Pharma_Task1.Web.Controllers
             if (product == null)
                 return NotFound();
 
-            var categories = await categoryRepository.GetAllAsync();
-            ViewBag.Categories = categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.catName
-            }).ToList();
-
+            await LoadCategoriesAsync();
             return View("Edit", product);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Product product)
@@ -96,16 +79,11 @@ namespace Eva_Pharma_Task1.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var categories = await categoryRepository.GetAllAsync();
-            ViewBag.Categories = categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.catName
-            }).ToList();
-
+            await LoadCategoriesAsync();
             return View("Edit", product);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await productRepository.GetProductAsync(id);
@@ -115,9 +93,9 @@ namespace Eva_Pharma_Task1.Web.Controllers
             return View("Delete", product);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmDelete(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await productRepository.GetProductAsync(id);
             if (product == null)
@@ -125,7 +103,17 @@ namespace Eva_Pharma_Task1.Web.Controllers
 
             await productRepository.DeleteAsync(id);
             await productRepository.SaveAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task LoadCategoriesAsync()
+        {
+            var categories = await categoryRepository.GetAllAsync();
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.catName
+            }).ToList();
         }
     }
 }

@@ -42,7 +42,8 @@
             </div>
 
             <!-- Action Buttons -->
-            <form asp-action="ConfirmDelete" asp-route-id="@Model.Id" method="post">
+            <form asp-controller="Categories" asp-action="ConfirmDelete" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-outline-dark">
