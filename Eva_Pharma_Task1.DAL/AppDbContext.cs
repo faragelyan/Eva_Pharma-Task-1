@@ -11,6 +11,7 @@ namespace Eva_Pharma_Task1.DAL
         }
 
         public DbSet<Categories> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

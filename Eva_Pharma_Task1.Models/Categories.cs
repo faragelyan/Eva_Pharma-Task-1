@@ -20,5 +20,6 @@ namespace Eva_Pharma_Task1.Models
         public DateTime createdDate { get; set; }
         //[Column("isDeleted")]
         public bool markedAsDeleted { get; set; }
+        public List<Product> products { get; set; } = new List<Product>();
     }
 }

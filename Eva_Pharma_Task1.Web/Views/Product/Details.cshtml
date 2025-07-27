@@ -1,0 +1,39 @@
+﻿@model Eva_Pharma_Task1.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h1 class="mb-4 text-primary fw-bold text-center">
+    <i class="bi bi-info-circle-fill"></i> Product Details
+</h1>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <dl class="row fs-5">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+
+            <dt class="col-sm-3">Title</dt>
+            <dd class="col-sm-9">@Model.Title</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            <dt class="col-sm-3">Author</dt>
+            <dd class="col-sm-9">@Model.Author</dd>
+
+            <dt class="col-sm-3">Price</dt>
+            <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+
+            <dt class="col-sm-3">Category</dt>
+            <dd class="col-sm-9">@Model.category?.catName ?? "N/A"</dd>
+        </dl>
+
+        <div class="text-end mt-4">
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+        </div>
+    </div>
+</div>

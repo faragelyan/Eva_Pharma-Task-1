@@ -13,11 +13,13 @@
             font-weight: 700;
             font-size: 1.6rem;
         }
+
         .nav-link {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
+
         footer {
             background-color: #f8f9fa;
         }
@@ -51,6 +53,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-controller="Categories" asp-action="Index">
                                 <i class="lu lu-list"></i> Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="Product" asp-action="Index">
+                                <i class="lu lu-package"></i> Products
                             </a>
                         </li>
                     </ul>

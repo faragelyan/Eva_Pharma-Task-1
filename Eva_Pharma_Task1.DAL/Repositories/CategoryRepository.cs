@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Eva_Pharma_Task1.DAL.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository(AppDbContext _appDbContext) : ICategoryRepository
     {
-        private readonly AppDbContext _appDbContext;
+        /*private readonly AppDbContext _appDbContext;
 
         public CategoryRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
-        }
+        }*/
 
         public async Task<List<Categories>> GetAllAsync()
         {
-            return await _appDbContext.Categories
+            return await _appDbContext.Categories.OrderBy(c=>c.catOrder).ThenBy(c=>c.catName)
                 .ToListAsync();
         }
 

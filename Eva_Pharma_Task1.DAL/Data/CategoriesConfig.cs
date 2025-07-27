@@ -22,6 +22,7 @@ namespace Eva_Pharma_Task1.DAL.Data
 
             builder.Property(c => c.markedAsDeleted)
                    .HasColumnName("isDeleted");
+
             var seedData = new List<Categories>();
             for (int i = 1; i <= 20; i++)
             {
