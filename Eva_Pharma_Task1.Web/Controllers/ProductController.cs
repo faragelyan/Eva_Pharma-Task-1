@@ -110,7 +110,7 @@ namespace Eva_Pharma_Task1.Web.Controllers
         private async Task LoadCategoriesAsync()
         {
             var categories = await categoryRepository.GetAllAsync();
-            ViewBag.Categories = categories.Select(c => new SelectListItem
+            ViewBag.Categories = categories.Where(c=>!c.markedAsDeleted).Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
                 Text = c.catName
