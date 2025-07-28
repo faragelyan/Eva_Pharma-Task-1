@@ -38,9 +38,13 @@ namespace Eva_Pharma_Task1.DAL.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var product = await _appDbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-            _appDbContext.Products .Remove(product);
+            var category = await _appDbContext.Categories.FindAsync(id);
+            if (category != null)
+            {
+                _appDbContext.Categories.Remove(category);
+            }
         }
+
 
         public async Task SaveAsync()
         {

@@ -93,7 +93,7 @@ namespace Eva_Pharma_Task1.Web.Controllers
             return View("Delete", product);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -105,6 +105,7 @@ namespace Eva_Pharma_Task1.Web.Controllers
             await productRepository.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private async Task LoadCategoriesAsync()
         {
