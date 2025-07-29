@@ -1,38 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Eva_Pharma_Task1.DAL.Repositories;
+using Eva_Pharma_Task1.DAL;
 using Eva_Pharma_Task1.Models;
+using System.Linq;
 using System.Threading.Tasks;
+using Eva_Pharma_Task1.DAL.Repositories;
 
 namespace Eva_Pharma_Task1.Web.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ICategoryRepository categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoriesController(ICategoryRepository categoryRepository)
+        public CategoriesController(IUnitOfWork unitOfWork)
         {
-            this.categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index()
         {
-            var categories = await categoryRepository.GetAllAsync();
-            return View("Index", categories);
+            var categories = await _unitOfWork.Categories.GetAllAsync();
+            return View(categories);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var category = await categoryRepository.GetCategoryAsync(id);
+            var category = await _unitOfWork.Categories.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
-            return View("Details", category);
+            return View(category);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            return View("Create");
+            return View();
         }
 
         [HttpPost]
@@ -41,22 +43,22 @@ namespace Eva_Pharma_Task1.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await categoryRepository.AddAsync(category);
-                await categoryRepository.SaveAsync();
-                return RedirectToAction("Index");
+                await _unitOfWork.Categories.AddAsync(category);
+                await _unitOfWork.SaveAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            return View("Create", category);
+            return View(category);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await categoryRepository.GetCategoryAsync(id);
+            var category = await _unitOfWork.Categories.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
-            return View("Edit", category);
+            return View(category);
         }
 
         [HttpPost]
@@ -65,58 +67,54 @@ namespace Eva_Pharma_Task1.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await categoryRepository.UpdateAsync(category);
-                await categoryRepository.SaveAsync();
+                await _unitOfWork.Categories.UpdateAsync(category);
+                await _unitOfWork.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View("Edit", category);
+            return View(category);
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await categoryRepository.GetCategoryAsync(id);
+            var category = await _unitOfWork.Categories.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
-            return View("Delete", category);
+            return View(category);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmDelete(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await categoryRepository.GetCategoryAsync(id);
+            var category = await _unitOfWork.Categories.GetCategoryAsync(id);
             if (category == null)
                 return NotFound();
 
-            await categoryRepository.DeleteAsync(id);
-            await categoryRepository.SaveAsync();
-            return RedirectToAction("Index");
+            await _unitOfWork.Categories.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Search(string query)
         {
-            var allCategories = await categoryRepository.GetAllAsync();
+            var allCategories = await _unitOfWork.Categories.GetAllAsync();
 
             var filtered = string.IsNullOrWhiteSpace(query)
                 ? allCategories
                 : allCategories.Where(c =>
-                    !string.IsNullOrEmpty(c.catName) &&
-                    c.catName.Contains(query, StringComparison.OrdinalIgnoreCase));
+                    !string.IsNullOrWhiteSpace(c.catName) &&
+                    c.catName.Contains(query, System.StringComparison.OrdinalIgnoreCase));
 
             return Json(filtered.Select(c => new
             {
-                id = c.Id,
-                catName = c.catName,
-                markedAsDeleted = c.markedAsDeleted
+                c.Id,
+                c.catName,
+                c.markedAsDeleted
             }));
         }
-
-
-
-
     }
 }

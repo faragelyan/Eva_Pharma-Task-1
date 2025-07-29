@@ -38,10 +38,10 @@ namespace Eva_Pharma_Task1.DAL.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var category = await _appDbContext.Categories.FindAsync(id);
-            if (category != null)
+            var product = await _appDbContext.Products.FindAsync(id);
+            if (product != null)
             {
-                _appDbContext.Categories.Remove(category);
+                _appDbContext.Products.Remove(product);
             }
         }
 

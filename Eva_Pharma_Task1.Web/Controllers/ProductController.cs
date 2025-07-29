@@ -1,34 +1,33 @@
-﻿using Eva_Pharma_Task1.DAL.Repositories;
+﻿using Eva_Pharma_Task1.DAL;
+using Eva_Pharma_Task1.DAL.Repositories;
 using Eva_Pharma_Task1.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Eva_Pharma_Task1.Web.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly IProductRepository productRepository;
-        private readonly ICategoryRepository categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)
+        public ProductController(IUnitOfWork unitOfWork)
         {
-            this.productRepository = productRepository;
-            this.categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var products = await productRepository.GetAllAsync();
+            var products = await _unitOfWork.Products.GetAllAsync();
             return View("Index", products);
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var product = await productRepository.GetProductAsync(id);
+            var product = await _unitOfWork.Products.GetProductAsync(id);
             if (product == null)
                 return NotFound();
 
@@ -48,8 +47,8 @@ namespace Eva_Pharma_Task1.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await productRepository.AddAsync(product);
-                await productRepository.SaveAsync();
+                await _unitOfWork.Products.AddAsync(product);
+                await _unitOfWork.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -60,7 +59,7 @@ namespace Eva_Pharma_Task1.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await productRepository.GetProductAsync(id);
+            var product = await _unitOfWork.Products.GetProductAsync(id);
             if (product == null)
                 return NotFound();
 
@@ -74,8 +73,8 @@ namespace Eva_Pharma_Task1.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await productRepository.UpdateAsync(product);
-                await productRepository.SaveAsync();
+                await _unitOfWork.Products.UpdateAsync(product);
+                await _unitOfWork.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -86,7 +85,7 @@ namespace Eva_Pharma_Task1.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var product = await productRepository.GetProductAsync(id);
+            var product = await _unitOfWork.Products.GetProductAsync(id);
             if (product == null)
                 return NotFound();
 
@@ -97,24 +96,25 @@ namespace Eva_Pharma_Task1.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await productRepository.GetProductAsync(id);
+            var product = await _unitOfWork.Products.GetProductAsync(id);
             if (product == null)
                 return NotFound();
 
-            await productRepository.DeleteAsync(id);
-            await productRepository.SaveAsync();
+            await _unitOfWork.Products.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
-
         private async Task LoadCategoriesAsync()
         {
-            var categories = await categoryRepository.GetAllAsync();
-            ViewBag.Categories = categories.Where(c=>!c.markedAsDeleted).Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.catName
-            }).ToList();
+            var categories = await _unitOfWork.Categories.GetAllAsync();
+            ViewBag.Categories = categories
+                .Where(c => !c.markedAsDeleted)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.catName
+                }).ToList();
         }
     }
 }
